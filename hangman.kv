@@ -1,0 +1,46 @@
+<HangmanGrid>
+     guess: guess
+     progress: progress
+     main_button: main_button
+     image: image
+     GridLayout:
+          cols: 1
+          size: root.width, root.height
+          GridLayout:
+               cols: 3
+               Label:
+                    text: "Hangman"
+                    font_size: 25
+                    size: root.width/3, 75
+                    size_hint: None, None 
+               Label:
+                    text: "Word"
+                    font_size: 25
+                    size: root.width/3, 75
+                    size_hint: None, None 
+               Label:
+                    text: "Guess"
+                    font_size: 25
+                    size: root.width/3, 75
+                    size_hint: None, None 
+
+               Image:
+                    id: image
+                    source: 'img/1.png'
+                    multiline: False  
+                    allow_strech: True
+               Label:
+                    font_size: 25
+                    id: progress
+                    text: ""
+               TextInput:
+                    font_size: 25
+                    id: guess
+                    multiline: False  
+          Button:
+               font_size: 25
+               id: main_button
+               text: "generate word"
+               on_press: root.gameRound()
+               size: root.width, 75
+               size_hint: None, None     
