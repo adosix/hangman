@@ -1,5 +1,5 @@
 ###########################################
-# Author: Andrej Ježík                    #
+# Author: Andrej Jezik                    #
 # email: andrejjezik@gmail.com            #
 ###########################################
 import random
@@ -18,12 +18,10 @@ Config.set('graphics', 'height', '450')
 #pick random word/s frrom the file
 #----------------------------------
 def getWordToGuess():
-     with open ("guess_words.txt", "r") as f_words:
-          rows = f_words.readlines()
-          rows_max = len(rows) - 1
-          rand = random.randint(0, rows_max)
-          rows = [w.replace('\n', '') for w in rows]
-     return rows[rand]
+     guess_words_f = open("guess_words.txt", "r")
+     random_row = random.choice(guess_words_f.readlines())
+     random_row = random_row.replace('\n', '')
+     return random_row
 
 def getWordProgress(word_to_guess,l_word_to_guess):
      word_progress = ""
@@ -40,7 +38,7 @@ def getWordProgress(word_to_guess,l_word_to_guess):
 #----------------------------------
 cooldown = 10  #number of fails before player looses
 success = 0    #indicator, if player won 1
-img_id = 1     
+img_id = 1     #which img is shown in app
 word_to_guess = getWordToGuess()   
 l_word_to_guess = len(word_to_guess)    
 word_progress = getWordProgress(word_to_guess,l_word_to_guess)
@@ -51,7 +49,10 @@ word_progress = getWordProgress(word_to_guess,l_word_to_guess)
 def displayProgress(word_to_guess, word_progress, guess= "\n"):
      success = 0         #if player hits right character
      cooldown_flag = 0   #decides wheter cooldown should be decremented or not
-     global l_word_to_guess
+     l_word_to_guess = len(word_to_guess) 
+     #----------------------------------
+     #if player tries to guess whole word
+     #----------------------------------
      if guess != "\n" and len(guess) > 1:
           if guess == word_to_guess:
                print("you won")
@@ -59,6 +60,9 @@ def displayProgress(word_to_guess, word_progress, guess= "\n"):
           else:
                print("U have lost... could wait a little longer")
                return word_progress, success, cooldown_flag, "false"
+     #----------------------------------
+     #if player guesses one character
+     #----------------------------------
      elif guess != '\n' and len(guess) == 1:
           tmp = ""
           count = 0
@@ -81,9 +85,9 @@ class HangmanGrid(Widget):
      guess = ObjectProperty(None)
      progress = ObjectProperty()
      main_button = ObjectProperty()
-          #----------------------------------
-          #main game loop
-          #----------------------------------
+     #----------------------------------
+     #main game loop
+     #----------------------------------
      def gameRound(self):
           global cooldown     
           global l_word_to_guess
@@ -148,6 +152,8 @@ class HangmanGrid(Widget):
           if change_img == 1:
                img_id = img_id + 1
                self.image.source = 'img/' + str(img_id) + '.png'
+               if img_id == 11:
+                    img_id = 1
 class Hangman(App):
      def build (self):
           return HangmanGrid()
