@@ -3,44 +3,115 @@
      progress: progress
      main_button: main_button
      image: image
+     points: points
+     button_l: button_l
+     wrong_letters: wrong_letters
+     canvas:
+          Color:
+               rgb: (1, 1, 1)
+          Rectangle:
+               pos: self.pos
+               size: self.size
      GridLayout:
           cols: 1
           size: root.width, root.height
           GridLayout:
-               cols: 3
+               cols: 2
+               size_hint_y: None
+               height: 75
+
+               canvas:
+                    Color:
+                         rgb: (0.29804, 0.81961, 0.21569)
+                    Rectangle:
+                         pos: self.pos
+                         size: self.size
                Label:
+                    
+                    text: "level:"
+                    font_size: 25
+                    size: root.width/2, 30
+                    size_hint: None, None 
+               Label:
+                    text: "0"
+                    font_size: 25
+                    size: root.width/2, 30
+                    size_hint: None, None 
+               Label:
+                    text: "Points:"
+                    font_size: 25
+                    size: root.width/2, 30
+                    size_hint: None, None 
+               Label:
+                    id: points
+                    text: "0"
+                    font_size: 25
+                    size: root.width/2, 30
+                    size_hint: None, None 
+          GridLayout:
+               cols: 3
+               
+               Label:
+                    color: 0,0,0,1
                     text: "Hangman"
                     font_size: 25
-                    size: root.width/3, 75
+                    size: root.width/3, 50
                     size_hint: None, None 
+                    
                Label:
+                    color: 0,0,0,1
                     text: "Word"
                     font_size: 25
-                    size: root.width/3, 75
+                    size: root.width/3, 50
                     size_hint: None, None 
                Label:
+                    color: 0,0,0,1
                     text: "Guess"
                     font_size: 25
-                    size: root.width/3, 75
-                    size_hint: None, None 
-
+                    size: root.width/3, 50
+                    size_hint: None, None
                Image:
-                    id: image
+                    id: image 
                     source: 'img/1.png'
                     multiline: False  
                     allow_strech: True
+                    size_hint: 1,1
                Label:
+                    color: 0,0,0,1
                     font_size: 25
                     id: progress
                     text: ""
-               TextInput:
-                    font_size: 25
-                    id: guess
-                    multiline: False  
+               GridLayout:
+                    cols:1
+                    TextInput:
+                         focus: True
+                         font_size: 25
+                         id: guess
+                         multiline: False  
+                         height: 70
+                         size_hint_y: None
+                    Label:
+                         color: 0,0,0,1
+                         font_size: 25
+                         text: "Wrong letters"
+                    Label:
+                         color: 0,0,0,1
+                         font_size: 25
+                         id: wrong_letters
+                         text: ""
           Button:
-               font_size: 25
                id: main_button
-               text: "generate word"
-               on_press: root.gameRound()
+               on_press: root.gameRound(),root.animate(self)
                size: root.width, 75
-               size_hint: None, None     
+               size_hint: None, None 
+               canvas:
+                    Color:
+                         rgb: (0.29804, 0.81961, 0.21569)
+                    Rectangle:
+                         pos: self.pos
+                         size: self.size
+               Label:
+                    id: button_l
+                    size: root.width, 75
+                    font_size: 25
+                    text: "generate word"

@@ -5,6 +5,8 @@
 import random
 
 from kivy.app import App
+from kivy.core.window import Window
+from kivy.animation import Animation
 from kivy.uix.widget import Widget
 from kivy.uix.label import Label
 from kivy.uix.gridlayout import GridLayout
@@ -12,8 +14,10 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.properties import ObjectProperty
 from kivy.config import Config
+from kivy.clock import Clock
+
 Config.set('graphics', 'width', '600')
-Config.set('graphics', 'height', '450')
+Config.set('graphics', 'height', '550')
 #----------------------------------
 #pick random word/s frrom the file
 #----------------------------------
@@ -39,6 +43,7 @@ def getWordProgress(word_to_guess,l_word_to_guess):
 cooldown = 10  #number of fails before player looses
 success = 0    #indicator, if player won 1
 img_id = 1     #which img is shown in app
+points = 0
 word_to_guess = getWordToGuess()   
 l_word_to_guess = len(word_to_guess)    
 word_progress = getWordProgress(word_to_guess,l_word_to_guess)
@@ -78,13 +83,35 @@ def displayProgress(word_to_guess, word_progress, guess= "\n"):
      return word_progress, success, cooldown_flag, "nothing"
 
 class HangmanGrid(Widget):
+     def __init__(self, **kwargs):
+          super(HangmanGrid, self).__init__(**kwargs)
+          Window.bind(on_key_down=self._keydown)
+          
+
+
+     #enter to submit acction
+     def _keydown(self,*args):
+          if args[1] == 13:
+               self.gameRound()
+          #focus on text input
+          else:
+               if self.guess.focus != True:
+                    self.guess.focus = True
+                    self.guess.text = self.guess.text+ str(args[3])
+     def animate(self, instance):
+          animation = Animation(pos=(0, 5), t='out_bounce',duration= 0.2)
+          animation += Animation(pos=(0, 0), t='out_bounce',duration= 0.2)
+          animation.start(instance)
+          
      def update_word_progress(self):
           global word_progress
           self.progress.text = word_progress
 
+
      guess = ObjectProperty(None)
      progress = ObjectProperty()
      main_button = ObjectProperty()
+
      #----------------------------------
      #main game loop
      #----------------------------------
@@ -93,18 +120,20 @@ class HangmanGrid(Widget):
           global l_word_to_guess
           global word_progress
           global word_to_guess
+          global points
           change_img = 0
           #----------------------------------
           #new round init
           #----------------------------------
-          if self.main_button.text == "you won" or self.main_button.text == "you lost":
+          if self.button_l.text == "you won" or self.button_l.text == "you lost":
                word_to_guess = getWordToGuess()
                l_word_to_guess = len(word_to_guess)
                word_progress = getWordProgress(word_to_guess,l_word_to_guess)
                self.image.source = 'img/1.png'
                cooldown = 10
-          if self.main_button.text != "Submit":
-               self.main_button.text = "Submit"
+               self.wrong_letters.text = ""
+          if self.button_l.text != "Submit":
+               self.button_l.text = "Submit"
                self.update_word_progress()
                return
           #----------------------------------
@@ -118,17 +147,25 @@ class HangmanGrid(Widget):
           #user can guess if cooldown > 0
           #----------------------------------
           if cooldown > 0:
+               global img_id
                word_progress , success, cooldown_flag,final= displayProgress(word_to_guess, word_progress, guess_string )
                if final == "true":
                     word_progress = word_to_guess
                     self.update_word_progress()
-                    self.main_button.text = "you won"
+                    self.button_l.text = "you won"
+                    img_id = 1
+                    points = points + cooldown
+                    self.points.text = str(points)
                     return
                elif final == "false":
-                    self.main_button.text = "you lost"
+                    self.button_l.text = "you lost"
+                    img_id = 1
+                    points = points - 8
+                    self.points.text = str(points)
                     return
                if cooldown_flag == 0:
                     cooldown = cooldown - 1
+                    self.wrong_letters.text = self.wrong_letters.text + guess_string +", "
                count = 0
                missing = 0 
                change_img = 1
@@ -140,20 +177,27 @@ class HangmanGrid(Widget):
                     count = count +1
                self.update_word_progress()
                if success == 1 or missing == 0:
-                    self.main_button.text = "you won"   
+                    self.button_l.text = "you won"  
+                    img_id = 1
+                    points = points + cooldown 
+                    self.points.text = str(points)
                     return 
           else:
-               self.main_button.text = "you lost"
+               self.button_l.text = "you lost"
+               img_id = 1
+               points = points - 8
+               self.points.text = str(points)
                return
           #----------------------------------
           #switchng images of hangman
           #----------------------------------
-          global img_id
+          
           if change_img == 1:
                img_id = img_id + 1
                self.image.source = 'img/' + str(img_id) + '.png'
                if img_id == 11:
                     img_id = 1
+          
 class Hangman(App):
      def build (self):
           return HangmanGrid()
