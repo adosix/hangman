@@ -44,6 +44,7 @@ cooldown = 10  #number of fails before player looses
 success = 0    #indicator, if player won 1
 img_id = 1     #which img is shown in app
 points = 0
+level = 0
 word_to_guess = getWordToGuess()   
 l_word_to_guess = len(word_to_guess)    
 word_progress = getWordProgress(word_to_guess,l_word_to_guess)
@@ -121,6 +122,7 @@ class HangmanGrid(Widget):
           global word_progress
           global word_to_guess
           global points
+          global level
           change_img = 0
           #----------------------------------
           #new round init
@@ -131,6 +133,13 @@ class HangmanGrid(Widget):
                word_progress = getWordProgress(word_to_guess,l_word_to_guess)
                self.image.source = 'img/1.png'
                cooldown = 10
+               if points < 0:
+                    points = 0
+                    level = 0
+               else:
+                    level = level + 1
+               self.points.text = str(points)
+               self.level.text =str(level)
                self.wrong_letters.text = ""
           if self.button_l.text != "Submit":
                self.button_l.text = "Submit"
