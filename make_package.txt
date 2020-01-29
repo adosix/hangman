@@ -1,6 +1,0 @@
----po vytvoreni nezadbunut dat vsetky zdroje k vygenerovanemu spustaciemu suboru
-
-pyinstaller hangman.py --onefile --hidden-import='pkg_resources.py2_warn' ${package}
-
-
-
