@@ -10,7 +10,7 @@ There are two versions
   1. Game launches There is button "Generate word" by clicking on it game startsGetting Started
   <img src="documentation/images/start.png"  width = 500> 
   2. Button changes name to "Submit now you can enter character or whole word to the input field"
-   <img src="documentation/images/progress1.png"  width = 500>
+   <img src="documentation/images/progress2.png"  width = 500>
    
   3. If you guessed right, word updates or hangman picutre changes 
   <img src="documentation/images/progress4.png"  width = 500>
